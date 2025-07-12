@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ingeniería Electrónica - Universidad del Valle</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fff0f5;
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #fff0f5 0%, #ffeef7 100%);
+      }
+
+      h1 {
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        color: #c2185b;
+        text-align: center;
+        margin: 20px 0 40px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        font-size: 2.5rem;
+      }
+
+      .info-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background: linear-gradient(145deg, #ffdae9, #ffc8d9);
+        padding: 15px 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: 0 auto 30px;
+        border: 1px solid #f48fb1;
+      }
+
+      .creditos-info {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #880e4f;
+        background: rgba(255, 255, 255, 0.7);
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .reset-btn {
+        background: linear-gradient(145deg, #c2185b, #ad1457);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+      }
+
+      .reset-btn:hover {
+        background: linear-gradient(145deg, #ad1457, #880e4f);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .malla-grid {
+        display: flex;
+        gap: 30px;
+        overflow-x: auto;
+        padding: 10px;
+        justify-content: flex-start;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-bottom: 30px;
+      }
+
+      .semestre {
+        min-width: 240px;
+        background-color: #ffe4ec;
+        border: 2px solid #f48fb1;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .semestre:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #c2185b, #f48fb1);
+      }
+
+      .semestre:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .semestre h2 {
+        text-align: center;
+        color: #ad1457;
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #f8bbd0;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+      }
+
+      .ramo {
+        background: linear-gradient(145deg, #f8bbd0, #ec9fb9);
+        border: 1px solid #c2185b;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        text-align: center;
+        cursor: pointer;
+        color: #880e4f;
+        font-weight: 600;
+        box-shadow: 4px 4px 8px #c28aa2, -4px -4px 8px #ffcee1;
+        transition: all 0.3s ease;
+        user-select: none;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .ramo:hover {
+        background: linear-gradient(145deg, #f48fb1, #e47c9d);
+        box-shadow: 6px 6px 10px #b67288, -6px -6px 10px #ffbed4;
+        color: #5c0040;
+        transform: translateY(-3px);
+      }
+
+      .ramo:active {
+        box-shadow: inset 3px 3px 5px #b67288, inset -3px -3px 5px #ffbed4;
+        transform: translateY(1px);
+      }
+
+      .ramo.bloqueado {
+        background: #f3f3f3;
+        color: #999;
+        border-style: dashed;
+        border-color: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+        background: none;
+      }
+
+      .ramo.aprobado {
+        background: linear-gradient(145deg, #d1bee7, #b695d3) !important;
+        color: #4a148c;
+        border-color: #6a1b9a;
+        text-decoration: line-through;
+        font-style: italic;
+        box-shadow: 4px 4px 8px #8a69a2, -4px -4px 8px #c6aee1;
+      }
+
+      .ramo .credito {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #880e4f;
+      }
+
+      .ramo.aprobado .credito {
+        background: rgba(106, 27, 154, 0.2);
+        color: #4a148c;
+      }
+
+      .ramo.bloqueado .credito {
+        background: rgba(0, 0, 0, 0.05);
+        color: #999;
+      }
+
+      .instructions {
+        max-width: 1200px;
+        margin: 30px auto;
+        background: linear-gradient(145deg, #ffdae9, #ffc8d9);
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f48fb1;
+      }
+
+      .instructions h2 {
+        color: #ad1457;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .instructions-content {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+      }
+
+      .instruction-card {
+        flex: 1;
+        min-width: 250px;
+        background: rgba(255, 255, 255, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .instruction-card h3 {
+        color: #c2185b;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+      }
+
+      .instruction-card ul {
+        padding-left: 20px;
+      }
+
+      .instruction-card li {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: #ad1457;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      /* Scrollbar styling */
+      .malla-grid::-webkit-scrollbar {
+        height: 10px;
+      }
+
+      .malla-grid::-webkit-scrollbar-track {
+        background: #ffe4ec;
+        border-radius: 10px;
+      }
+
+      .malla-grid::-webkit-scrollbar-thumb {
+        background: linear-gradient(145deg, #f48fb1, #c2185b);
+        border-radius: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .info-bar {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        .semestre {
+          min-width: 280px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        .creditos-info {
+          font-size: 1rem;
+          padding: 8px 15px;
+        }
+
+        .reset-btn {
+          padding: 10px 20px;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Ingeniería Electrónica - Universidad del Valle</h1>
+
+    <div class="info-bar">
+      <div class="creditos-info">
+        Créditos aprobados: <span id="creditos-total">0</span> / 300
+      </div>
+      <button class="reset-btn" onclick="resetProgreso()">
+        Reiniciar Progreso
+      </button>
+    </div>
+
+    <div class="malla-grid">
+      <!-- Semestre 1 -->
+      <div class="semestre" id="sem1">
+        <h2>1° Semestre</h2>
+        <div class="ramo" id="deporte">
+          Deporte y Salud <span class="credito">2</span>
+        </div>
+        <div class="ramo" id="vida_uni">
+          Inserción a la Vida Universitaria <span class="credito">2</span>
+        </div>
+        <div class="ramo" id="mat_basicas">
+          Matemáticas Básicas <span class="credito">3</span>
+        </div>
+        <div class="ramo" id="fund_prog">
+          Fundamentos de Programación <span class="credito">3</span>
+        </div>
+        <div class="ramo" id="intro_ingenieria">
+          Introducción a la Ingeniería <span class="credito">2</span>
+        </div>
+        <div class="ramo" id="taller1">
+          Taller de Ingeniería I <span class="credito">3</span>
+        </div>
+        <div class="ramo" id="logica">
+          Lógica Combinacional <span class="credito">2</span>
+        </div>
+      </div>
+
+      <!-- Semestre 2 -->
+      <div class="semestre" id="sem2">
+        <h2>2° Semestre</h2>
+        <div class="ramo bloqueado" id="probabilidad">
+          Probabilidad y Estadística <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="calculo1">
+          Cálculo Monovariable <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="fisica1">
+          Física I + Laboratorio <span class="credito">4</span>
+        </div>
+        <div class="ramo bloqueado" id="poo">
+          Programación Orientada a Objetos <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="algebra">
+          Álgebra Lineal <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="diseno_logico">
+          Diseño Lógico Combinacional <span class="credito">2</span>
+        </div>
+      </div>
+
+      <!-- Semestre 3 -->
+      <div class="semestre" id="sem3">
+        <h2>3° Semestre</h2>
+        <div class="ramo bloqueado" id="ecuaciones">
+          Ecuaciones Diferenciales <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="calculo2">
+          Cálculo Multivariable <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="electromagnetica1">
+          Teoría Electromagnética I <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="metodologias">
+          Metodologías de Desarrollo de Software <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="taller2">
+          Taller de Ingeniería II <span class="credito">2</span>
+        </div>
+        <div class="ramo bloqueado" id="diseno_secuencial">
+          Diseño Lógico Secuencial <span class="credito">3</span>
+        </div>
+      </div>
+
+      <!-- Semestre 4 -->
+      <div class="semestre" id="sem4">
+        <h2>4° Semestre</h2>
+        <div class="ramo bloqueado" id="senales1">
+          Señales y Sistemas I <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="metodos">
+          Métodos Numéricos <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="electromagnetica2">
+          Teoría Electromagnética II <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="circuitos1">
+          Circuitos Eléctricos I <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="taller3">
+          Taller de Ingeniería III <span class="credito">2</span>
+        </div>
+        <div class="ramo bloqueado" id="microcontroladores">
+          Sistemas con Microcontroladores <span class="credito">3</span>
+        </div>
+      </div>
+
+      <!-- Semestre 5 -->
+      <div class="semestre" id="sem5">
+        <h2>5° Semestre</h2>
+        <div class="ramo bloqueado" id="senales2">
+          Señales y Sistemas II <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="electronica1">
+          Electrónica I: Amplificación <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="fisica_dispositivos">
+          Física de Dispositivos Electrónicos <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="circuitos2">
+          Circuitos Eléctricos II <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="taller4">
+          Taller de Ingeniería IV <span class="credito">2</span>
+        </div>
+        <div class="ramo bloqueado" id="plataformas">
+          Plataformas de Alto Desempeño <span class="credito">3</span>
+        </div>
+      </div>
+
+      <!-- Semestre 6 -->
+      <div class="semestre" id="sem6">
+        <h2>6° Semestre</h2>
+        <div class="ramo bloqueado" id="sistemas_comunicaciones">
+          Sistemas de Comunicaciones <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="electronica2">
+          Electrónica II: Diodos y Transistores <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="fundamentos_control">
+          Fundamentos de Control <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="proyecto1">
+          Proyecto de Ingeniería I <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="ing_economica">
+          Ingeniería Económica <span class="credito">3</span>
+        </div>
+      </div>
+
+      <!-- Semestre 7 -->
+      <div class="semestre" id="sem7">
+        <h2>7° Semestre</h2>
+        <div class="ramo bloqueado" id="redes_comunicaciones">
+          Redes de Comunicaciones <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="medidas">
+          Medidas e Instrumentación <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="electronica_potencia">
+          Electrónica de Potencia <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="analisis_control">
+          Análisis y Compensación <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="proyecto2">
+          Proyecto de Ingeniería II <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="admin_proyectos">
+          Administración de Proyectos <span class="credito">3</span>
+        </div>
+      </div>
+
+      <!-- Semestre 8 -->
+      <div class="semestre" id="sem8">
+        <h2>8° Semestre</h2>
+        <div class="ramo bloqueado" id="redes_comunicaciones2">
+          Redes de Comunicaciones II <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="sistemas_inteligentes">
+          Sistemas Electrónicos Inteligentes <span class="credito">2</span>
+        </div>
+        <div class="ramo bloqueado" id="impactos_ambientales">
+          Impactos Ambientales <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="fund_automatizacion">
+          Fundamentos de Automatización <span class="credito">2</span>
+        </div>
+        <div class="ramo bloqueado" id="proyecto3">
+          Proyecto de Ingeniería III <span class="credito">3</span>
+        </div>
+        <div class="ramo bloqueado" id="seminario_trabajo">
+          Seminario de Trabajo de Grado <span class="credito">2</span>
+        </div>
+      </div>
+
+      <!-- Semestre 9 -->
+      <div class="semestre" id="sem9">
+        <h2>9° Semestre</h2>
+        <div class="ramo bloqueado" id="seminario_leyes">
+          Seminario Constitución y Ética <span class="credito">2</span>
+        </div>
+        <div class="ramo bloqueado" id="trabajo_grado1">
+          Trabajo de Grado I <span class="credito">4</span>
+        </div>
+      </div>
+
+      <!-- Semestre 10 -->
+      <div class="semestre" id="sem10">
+        <h2>10° Semestre</h2>
+        <div class="ramo bloqueado" id="trabajo_grado2">
+          Trabajo de Grado II <span class="credito">4</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <h2>Instrucciones de uso</h2>
+      <div class="instructions-content">
+        <div class="instruction-card">
+          <h3>Cómo interactuar</h3>
+          <ul>
+            <li>Haz clic en cualquier ramo para marcarlo como aprobado</li>
+            <li>Los ramos aprobados se mostrarán en color púrpura</li>
+            <li>
+              Al aprobar un ramo, se desbloquean automáticamente sus
+              dependencias
+            </li>
+            <li>El contador de créditos muestra tu progreso total</li>
+          </ul>
+        </div>
+
+        <div class="instruction-card">
+          <h3>Estado de los ramos</h3>
+          <ul>
+            <li>
+              <span style="color: #880e4f; font-weight: 600">Rosa</span>: Ramos
+              disponibles para aprobar
+            </li>
+            <li>
+              <span style="color: #999; font-weight: 600">Gris</span>: Ramos
+              bloqueados por prerrequisitos
+            </li>
+            <li>
+              <span style="color: #4a148c; font-weight: 600">Púrpura</span>:
+              Ramos aprobados
+            </li>
+            <li>El número en cada tarjeta indica los créditos del ramo</li>
+          </ul>
+        </div>
+
+        <div class="instruction-card">
+          <h3>Consejos</h3>
+          <ul>
+            <li>Comienza aprobando los ramos del primer semestre</li>
+            <li>Revisa los prerrequisitos antes de planificar</li>
+            <li>Puedes reiniciar tu progreso en cualquier momento</li>
+            <li>Desplázate horizontalmente para ver todos los semestres</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Universidad del Valle - Facultad de Ingeniería Electrónica © 2025
+    </div>
+
+    <script>
+      // Créditos de cada ramo
+      const creditos = {
+        deporte: 2,
+        vida_uni: 2,
+        mat_basicas: 3,
+        fund_prog: 3,
+        intro_ingenieria: 2,
+        taller1: 3,
+        logica: 2,
+        probabilidad: 3,
+        calculo1: 3,
+        fisica1: 4,
+        poo: 3,
+        algebra: 3,
+        diseno_logico: 2,
+        ecuaciones: 3,
+        calculo2: 3,
+        electromagnetica1: 3,
+        metodologias: 3,
+        taller2: 2,
+        diseno_secuencial: 3,
+        senales1: 3,
+        metodos: 3,
+        electromagnetica2: 3,
+        circuitos1: 3,
+        taller3: 2,
+        microcontroladores: 3,
+        senales2: 3,
+        electronica1: 3,
+        fisica_dispositivos: 3,
+        circuitos2: 3,
+        taller4: 2,
+        plataformas: 3,
+        sistemas_comunicaciones: 3,
+        electronica2: 3,
+        fundamentos_control: 3,
+        proyecto1: 3,
+        ing_economica: 3,
+        redes_comunicaciones: 3,
+        medidas: 3,
+        electronica_potencia: 3,
+        analisis_control: 3,
+        proyecto2: 3,
+        admin_proyectos: 3,
+        redes_comunicaciones2: 3,
+        sistemas_inteligentes: 2,
+        impactos_ambientales: 3,
+        fund_automatizacion: 2,
+        proyecto3: 3,
+        seminario_trabajo: 2,
+        seminario_leyes: 2,
+        trabajo_grado1: 4,
+        trabajo_grado2: 4,
+      };
+
+      // Prerrequisitos de cada ramo
+      const prerequisitos = {
+        deporte: [],
+        vida_uni: [],
+        mat_basicas: [],
+        fund_prog: [],
+        intro_ingenieria: [],
+        taller1: [],
+        logica: [],
+
+        probabilidad: ["mat_basicas"],
+        calculo1: ["mat_basicas"],
+        fisica1: ["mat_basicas"],
+        poo: ["fund_prog"],
+        algebra: ["mat_basicas"],
+        diseno_logico: ["fund_prog", "logica"],
+
+        ecuaciones: ["calculo1"],
+        calculo2: ["calculo1", "algebra"],
+        electromagnetica1: ["calculo1", "fisica1"],
+        metodologias: ["poo"],
+        taller2: ["calculo1", "algebra", "taller1"],
+        diseno_secuencial: ["diseno_logico"],
+
+        senales1: ["ecuaciones"],
+        metodos: ["fund_prog", "calculo1"],
+        electromagnetica2: ["calculo2", "electromagnetica1"],
+        circuitos1: ["electromagnetica1"],
+        taller3: ["taller2"],
+        microcontroladores: ["diseno_secuencial"],
+
+        senales2: ["senales1"],
+        electronica1: ["circuitos1"],
+        fisica_dispositivos: ["electromagnetica2"],
+        circuitos2: ["circuitos1"],
+        taller4: ["taller3"],
+        plataformas: ["microcontroladores"],
+
+        sistemas_comunicaciones: ["senales2"],
+        electronica2: ["fisica_dispositivos", "electronica1"],
+        fundamentos_control: ["senales2"],
+        proyecto1: ["taller4"],
+        ing_economica: ["probabilidad"],
+
+        redes_comunicaciones: ["sistemas_comunicaciones"],
+        medidas: ["electronica2"],
+        electronica_potencia: ["electronica2", "circuitos2"],
+        analisis_control: ["fundamentos_control"],
+        proyecto2: ["proyecto1"],
+        admin_proyectos: ["ing_economica"],
+
+        redes_comunicaciones2: ["redes_comunicaciones"],
+        sistemas_inteligentes: ["redes_comunicaciones", "medidas"],
+        impactos_ambientales: ["probabilidad"],
+        fund_automatizacion: ["redes_comunicaciones", "medidas"],
+        proyecto3: ["proyecto2"],
+        seminario_trabajo: ["proyecto3"],
+        seminario_leyes: ["admin_proyectos"],
+        trabajo_grado1: ["seminario_trabajo"],
+        trabajo_grado2: ["trabajo_grado1"],
+      };
+
+      // Obtener ramos aprobados desde localStorage
+      function obtenerAprobados() {
+        const data = localStorage.getItem("mallaAprobados");
+        return data ? JSON.parse(data) : [];
+      }
+
+      // Guardar ramos aprobados en localStorage
+      function guardarAprobados(aprobados) {
+        localStorage.setItem("mallaAprobados", JSON.stringify(aprobados));
+        actualizarCreditos();
+      }
+
+      // Calcular créditos aprobados
+      function calcularCreditosAprobados() {
+        const aprobados = obtenerAprobados();
+        return aprobados.reduce((sum, ramo) => sum + (creditos[ramo] || 0), 0);
+      }
+
+      // Actualizar contador de créditos
+      function actualizarCreditos() {
+        const totalCreditos = calcularCreditosAprobados();
+        document.getElementById("creditos-total").textContent = totalCreditos;
+      }
+
+      // Actualizar estado de los ramos (desbloqueados/aprobados)
+      function actualizarDesbloqueos() {
+        const aprobados = obtenerAprobados();
+
+        // Actualizar estado de cada ramo
+        for (const [ramoId, requisitos] of Object.entries(prerequisitos)) {
+          const elemento = document.getElementById(ramoId);
+          if (!elemento) continue;
+
+          // Verificar si el ramo está aprobado
+          const estaAprobado = aprobados.includes(ramoId);
+
+          if (estaAprobado) {
+            elemento.classList.add("aprobado");
+            elemento.classList.remove("bloqueado");
+          } else {
+            // Verificar si se cumplen los prerrequisitos
+            const requisitosCumplidos = requisitos.every((req) =>
+              aprobados.includes(req)
+            );
+
+            if (requisitosCumplidos) {
+              elemento.classList.remove("bloqueado");
+            } else {
+              elemento.classList.add("bloqueado");
+            }
+
+            elemento.classList.remove("aprobado");
+          }
+        }
+      }
+
+      // Manejar aprobación de ramo
+      function aprobar(ramoId) {
+        const ramo = document.getElementById(ramoId);
+        if (!ramo || ramo.classList.contains("bloqueado")) return;
+
+        ramo.classList.toggle("aprobado");
+
+        const aprobados = obtenerAprobados();
+        if (ramo.classList.contains("aprobado")) {
+          if (!aprobados.includes(ramoId)) aprobados.push(ramoId);
+        } else {
+          const idx = aprobados.indexOf(ramoId);
+          if (idx > -1) aprobados.splice(idx, 1);
+        }
+
+        guardarAprobados(aprobados);
+        actualizarDesbloqueos();
+      }
+
+      // Reiniciar progreso
+      function resetProgreso() {
+        if (confirm("¿Estás seguro que quieres reiniciar todo tu progreso?")) {
+          localStorage.removeItem("mallaAprobados");
+
+          // Remover estado aprobado de todos los ramos
+          document.querySelectorAll(".ramo").forEach((ramo) => {
+            ramo.classList.remove("aprobado");
+          });
+
+          actualizarDesbloqueos();
+          actualizarCreditos();
+        }
+      }
+
+      // Inicializar al cargar la página
+      window.addEventListener("DOMContentLoaded", () => {
+        // Asignar eventos a los ramos
+        document.querySelectorAll(".ramo").forEach((ramo) => {
+          ramo.addEventListener("click", () => aprobar(ramo.id));
+        });
+
+        // Cargar estado inicial
+        actualizarDesbloqueos();
+        actualizarCreditos();
+      });
+    </script>
+  </body>
+</html>
